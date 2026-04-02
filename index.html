@@ -347,30 +347,73 @@
         let cart = [];
         let discountAmount = 0;
 
+        const prices = {
+            completos: { base: 3000, ingredient: 500 },
+            pizzas: { base: 5000, ingredient: 800 },
+            sushi: { base: 4000, ingredient: 600 }
+        };
+
         function addToCart(product) {
+            const section = document.getElementById(product.toLowerCase());
+            const checkboxes = section.querySelectorAll('input[type="checkbox"]:checked');
+            const ingredients = Array.from(checkboxes).map(cb => cb.parentElement.textContent.trim());
+            const qtyInput = section.querySelector('input[type="number"]');
+            const qty = parseInt(qtyInput.value);
+            
+            if (ingredients.length === 0) {
+                alert('Selecciona al menos un ingrediente');
+                return;
+            }
+            
+            const priceData = prices[product.toLowerCase()];
+            const ingredientCost = ingredients.length * priceData.ingredient;
+            const totalPrice = (priceData.base + ingredientCost) * qty;
+            
+            cart.push({ 
+                name: product, 
+                ingredients: ingredients, 
+                qty: qty, 
+                price: totalPrice 
+            });
+            
+            alert(product + ' agregado al carrito');
+            updateCart();
+        }
             alert(product + ' agregado al carrito');
             updateCart();
         }
 
         function addBeverage() {
             const beverage = document.getElementById('beverageSelect').value;
-            const qty = document.getElementById('beverageQty').value;
-            if (beverage) cart.push({ name: beverage, qty: qty });
+            const qty = parseInt(document.getElementById('beverageQty').value);
+            if (beverage) {
+                const [name, priceStr] = beverage.split(' - $');
+                const price = parseInt(priceStr.replace('.', ''));
+                cart.push({ name: name, qty: qty, price: price * qty });
+            }
             updateCart();
         }
 
         function addAddon() {
             const addon = document.getElementById('addonSelect').value;
-            const qty = document.getElementById('addonQty').value;
-            if (addon) cart.push({ name: addon, qty: qty });
+            const qty = parseInt(document.getElementById('addonQty').value);
+            if (addon) {
+                const [name, priceStr] = addon.split(' - $');
+                const price = parseInt(priceStr.replace('.', ''));
+                cart.push({ name: name, qty: qty, price: price * qty });
+            }
             updateCart();
         }
 
         function updateCart() {
             const cartDiv = document.getElementById('cartItems');
-            cartDiv.innerHTML = cart.map((item, i) => 
-                `<div class="cart-item"><span>${item.name} x${item.qty}</span><button onclick="removeFromCart(${i})">✕</button></div>`
-            ).join('');
+            cartDiv.innerHTML = cart.map((item, i) => {
+                let displayName = item.name;
+                if (item.ingredients) {
+                    displayName += ` (${item.ingredients.join(', ')})`;
+                }
+                return `<div class="cart-item"><span>${displayName} x${item.qty} - $${item.price.toLocaleString()}</span><button onclick="removeFromCart(${i})">✕</button></div>`;
+            }).join('');
             updateTotal();
         }
 
@@ -380,9 +423,9 @@
         }
 
         function updateTotal() {
-            const subtotal = cart.length > 0 ? Math.random() * 50000 : 0;
-            document.getElementById('subtotal').textContent = Math.round(subtotal);
-            document.getElementById('total').textContent = Math.round(subtotal - discountAmount);
+            const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('subtotal').textContent = subtotal.toLocaleString();
+            document.getElementById('total').textContent = (subtotal - discountAmount).toLocaleString();
         }
 
         function applyDiscount() {
