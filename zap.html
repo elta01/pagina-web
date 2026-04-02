@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Completos • Pizzas • Sushi - Pedido</title>
+    
+</head>
+<body>
+    <header>
+        <div>
+            <h1 style="margin:.2rem 0">Zap Food — Pedidos</h1>
+            <div class="muted">Completos • Pizzas • Sushis</div>
+        </div>
+        <nav aria-label="Navegación principal">
+            <a href="#completos" data-cat="completos">Completos</a>
+            <a href="#pizzas" data-cat="pizzas">Pizzas</a>
+            <a href="#sushi" data-cat="sushi">Sushi</a>
+        </nav>
+    </header>
+
+    <main class="layout">
+        <section>
+            <div class="card" aria-labelledby="filtro-title">
+                <h2 id="filtro-title">¿Qué deseas pedir?</h2>
+                <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0">
+                    <select id="category" aria-label="Selecciona categoría">
+                        <option value="completos">Completos</option>
+                        <option value="pizzas">Pizzas</option>
+                        <option value="sushi">Sushi</option>
+                    </select>
+
+                    <label><input type="radio" name="mode" value="envio" checked/> Envío</label>
+                    <label><input type="radio" name="mode" value="retiro"/> Retiro</label>
+
+                    <div id="addressWrap" style="display:inline-block">
+                        <input id="address" placeholder="Dirección de entrega" />
+                    </div>
+
+                    <input id="promoCode" placeholder="Código promo (opcional)" style="margin-left:auto"/>
+                    <button id="applyPromo">Aplicar promo</button>
+                </div>
+            </div>
+
+            <section id="productsSection" class="card" style="margin-top:1rem">
+                <h3 id="productsTitle">Productos</h3>
+                <div id="products" class="products" aria-live="polite"></div>
+            </section>
+        </section>
+
+        <aside class="card" aria-labelledby="cartTitle">
+            <h3 id="cartTitle">Carrito</h3>
+            <div class="cart-items" id="cartItems"></div>
+
+            <div style="margin-top:.75rem" class="muted">
+                <div>Tipo: <span id="modeLabel">Envío</span></div>
+                <div id="addressLabel">Dirección: <span id="addrText"></span></div>
+                <div>Descuento: <span id="promoLabel">0%</span></div>
+            </div>
+
+            <div style="margin-top:.75rem;display:flex;gap:.5rem;align-items:center">
+                <div style="flex:1">
+                    <div class="muted">Total:</div>
+                    <strong id="total">0</strong>
+                </div>
+                <div style="text-align:right">
+                    <button id="checkout">Pagar</button>
+                    <button id="continue" style="background:#666">Seguir comprando</button>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <footer>
+        <small>Diseño semántico básico — Interfaz de pedido</small>
+    </footer>
+
+    <script>
+        // Datos iniciales
+        const PRODUCTS = {
+            completos: [
+                {id:'c1',name:'Completo Clásico',price:3500,desc:'Tomate, palta, mayonesa'},
+                {id:'c2',name:'Completo Italiano',price:3800,desc:'Palta, tomate, mayonesa especial'}
+            ],
+            pizzas: [
+                {id:'p1',name:'Margarita',price:7000,desc:'Queso mozzarella, tomate'},
+                {id:'p2',name:'Pepperoni',price:8200,desc:'Salsa, queso, pepperoni'}
+            ],
+            sushi: [
+                {id:'s1',name:'California Roll',price:5600,desc:'Aguacate, kanikama'},
+                {id:'s2',name:'Sashimi Mix',price:9200,desc:'Pescado fresco variado'}
+            ]
+        };
+
+        // Estado
+        let state = {
+            category: 'completos',
+            mode: 'envio',
+            address: '',
+            promo: {code:'',percent:0},
+            cart: []
+        };
+
+        // Elementos
+        const categorySelect = document.getElementById('category');
+        const productsEl = document.getElementById('products');
+        const cartItemsEl = document.getElementById('cartItems');
+        const totalEl = document.getElementById('total');
+        const modeLabel = document.getElementById('modeLabel');
+        const addressInput = document.getElementById('address');
+        const addressWrap = document.getElementById('addressWrap');
+        const addrText = document.getElementById('addrText');
+        const promoInput = document.getElementById('promoCode');
+        const promoLabel = document.getElementById('promoLabel');
+
+        // Render products by category
+        function renderProducts() {
+            productsEl.innerHTML = '';
+            const list = PRODUCTS[state.category] || [];
+            list.forEach(p => {
+                const card = document.createElement('article');
+                card.className = 'product';
+                card.innerHTML = `<strong>${p.name}</strong>
+                                                    <div class="muted">${p.desc}</div>
+                                                    <div style="display:flex;justify-content:space-between;align-items:center">
+                                                        <div class="muted">${formatPrice(p.price)}</div>
+                                                        <div>
+                                                            <input type="number" min="1" value="1" id="qty_${p.id}" style="width:64px;margin-right:.4rem"/>
+                                                            <button data-id="${p.id}">Agregar</button>
+                                                        </div>
+                                                    </div>`;
+                productsEl.appendChild(card);
+                card.querySelector('button').addEventListener('click', () => {
+                    const qty = parseInt(document.getElementById('qty_'+p.id).value) || 1;
+                    addToCart({...p}, qty);
+                });
+            });
+        }
+
+        function addToCart(product, qty=1){
+            const found = state.cart.find(i=>i.id===product.id);
+            if(found) found.qty += qty;
+            else state.cart.push({...product, qty});
+            renderCart();
+        }
+
+        function updateQty(id, qty){
+            const item = state.cart.find(i=>i.id===id);
+            if(!item) return;
+            item.qty = qty;
+            if(item.qty<=0) state.cart = state.cart.filter(i=>i.id!==id);
+            renderCart();
+        }
+
+        function removeItem(id){
+            state.cart = state.cart.filter(i=>i.id!==id);
+            renderCart();
+        }
+
+        function renderCart(){
+            cartItemsEl.innerHTML = '';
+            state.cart.forEach(i=>{
+                const div = document.createElement('div');
+                div.className = 'cart-item';
+                div.innerHTML = `<div>
+                        <strong>${i.name}</strong>
+                        <div class="muted">${formatPrice(i.price)} c/u</div>
+                    </div>
+                    <div class="controls">
+                        <input type="number" min="1" value="${i.qty}" style="width:64px" />
+                        <div style="width:6px"></div>
+                        <button data-remove="${i.id}" style="background:#c62828">X</button>
+                    </div>`;
+                cartItemsEl.appendChild(div);
+                div.querySelector('input').addEventListener('change', (e)=> updateQty(i.id, parseInt(e.target.value)||1));
+                div.querySelector('button').addEventListener('click', ()=> removeItem(i.id));
+            });
+
+            // Totales
+            const subtotal = state.cart.reduce((s,i)=>s + i.price * i.qty, 0);
+            const discount = Math.round(subtotal * (state.promo.percent/100));
+            const total = subtotal - discount;
+            totalEl.textContent = formatPrice(total);
+            promoLabel.textContent = state.promo.percent + '%';
+            modeLabel.textContent = state.mode === 'envio' ? 'Envío' : 'Retiro';
+            addrText.textContent = state.address || '-';
+        }
+
+        function formatPrice(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ' CLP'; }
+
+        // Event bindings
+        categorySelect.addEventListener('change', (e)=> { state.category = e.target.value; renderProducts(); });
+        document.querySelectorAll('nav a').forEach(a=> a.addEventListener('click', (ev)=>{
+            ev.preventDefault();
+            const cat = a.dataset.cat;
+            state.category = cat;
+            categorySelect.value = cat;
+            renderProducts();
+            window.scrollTo({top:0,behavior:'smooth'});
+        }));
+
+        document.querySelectorAll('input[name="mode"]').forEach(r=>{
+            r.addEventListener('change', ()=> {
+                state.mode = document.querySelector('input[name="mode"]:checked').value;
+                addressWrap.style.display = state.mode === 'envio' ? 'inline-block' : 'none';
+                renderCart();
+            });
+        });
+
+        addressInput.addEventListener('input', (e)=> { state.address = e.target.value; renderCart(); });
+
+        document.getElementById('applyPromo').addEventListener('click', ()=>{
+            const code = promoInput.value.trim().toUpperCase();
+            // Reglas simples de ejemplo
+            if(code === 'DESC10'){ state.promo = {code, percent:10}; }
+            else if(code === 'DESC20'){ state.promo = {code, percent:20}; }
+            else if(code === ''){ state.promo = {code:'',percent:0}; }
+            else { alert('Código no válido'); return; }
+            renderCart();
+        });
+
+        document.getElementById('continue').addEventListener('click', ()=> {
+            // "Seguir comprando" simplemente cierra foco al carrito y vuelve a productos
+            window.scrollTo({top:0,behavior:'smooth'});
+            document.getElementById('productsSection').focus();
+        });
+
+        document.getElementById('checkout').addEventListener('click', ()=>{
+            if(state.cart.length === 0){ alert('Carrito vacío'); return; }
+            const summary = {
+                items: state.cart,
+                mode: state.mode,
+                address: state.mode === 'envio' ? state.address : null,
+                promo: state.promo
+            };
+            console.log('Pedido:', summary);
+            alert('Pedido preparado (simulado). Revisa la consola para detalles.');
+            // Limpiar
+            state.cart = [];
+            state.promo = {code:'',percent:0};
+            promoInput.value = '';
+            renderCart();
+        });
+
+        // Inicialización
+        renderProducts();
+        renderCart();
+    </script>
+</body>
+</html>
