@@ -1,251 +1,413 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Completos • Pizzas • Sushi - Pedido</title>
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Italiana Delizioso - Completos, Pizzas y Sushi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fff8f0 0%, #ffe4cc 100%);
+            color: #333;
+        }
+        header {
+            background: linear-gradient(135deg, #c8102e 0%, #f4a460 100%);
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            font-size: 2.5em;
+            font-style: italic;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        nav {
+            background: #2c3e50;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        nav button {
+            background: #c8102e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        nav button:hover {
+            background: #f4a460;
+            transform: scale(1.05);
+        }
+        main {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            max-width: 1200px;
+            margin: 20px auto;
+            gap: 20px;
+            padding: 20px;
+        }
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #c8102e;
+        }
+        .section h2 {
+            color: #c8102e;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        .product-group {
+            margin-bottom: 20px;
+            border: 2px solid #ffe4cc;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .product-group h3 {
+            color: #f4a460;
+            margin-bottom: 10px;
+        }
+        .ingredients {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .ingredient-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ingredient-item input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+        .quantity-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .quantity-group input {
+            width: 60px;
+            padding: 8px;
+            border: 2px solid #ffe4cc;
+            border-radius: 5px;
+        }
+        .quantity-group button {
+            background: #c8102e;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .quantity-group button:hover {
+            background: #f4a460;
+        }
+        .cart {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        .cart h2 {
+            color: #c8102e;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        .cart-item {
+            background: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #f4a460;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-total {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #c8102e;
+            margin: 15px 0;
+            padding-top: 15px;
+            border-top: 2px solid #ffe4cc;
+        }
+        .discount-section {
+            background: #fff8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .discount-section input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ffe4cc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .beverage-select, .addon-select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ffe4cc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        .checkout-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #c8102e 0%, #f4a460 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(200, 16, 46, 0.3);
+        }
+        @media (max-width: 768px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+            .cart {
+                position: static;
+            }
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
 </head>
-<!-- Completos • Pizzas • Sushi - Pedido -->
 <body>
     <header>
-        <div>
-            <h1 style="margin:.2rem 0">Zap Food — Pedidos</h1>
-            <div class="muted">Completos • Pizzas • Sushis</div>
-        </div>
-        <nav aria-label="Navegacións principal">
-            <a href="#completos" data-cat="completos">Completos</a>
-            <a href="#pizzas" data-cat="pizzas">Pizzas</a>
-            <a href="#sushi" data-cat="sushi">Sushi</a>
-        </nav>
+        <h1>🍽️ Italiana Delizioso 🍽️</h1>
+        <p>Completos, Pizzas y Sushi Auténticos</p>
     </header>
 
-    <main class="layout">
-        <section>
-            <div class="card" aria-labelledby="filtro-title">
-                <h2 id="filtro-title">¿Qué deseas pedir?</h2>
-                <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0">
-                    <select id="category" aria-label="Selecciona categoría">
-                        <option value="completos">Completos</option>
-                        <option value="pizzas">Pizzas</option>
-                        <option value="sushi">Sushi</option>
-                    </select>
+    <nav>
+        <button onclick="scrollToSection('completos')">Completos</button>
+        <button onclick="scrollToSection('pizzas')">Pizzas</button>
+        <button onclick="scrollToSection('sushi')">Sushi</button>
+        <button onclick="scrollToSection('bebidas')">Bebidas</button>
+    </nav>
 
-                    <label><input type="radio" name="mode" value="envio" checked/> Envío</label>
-                    <label><input type="radio" name="mode" value="retiro"/> Retiro</label>
-
-                    <div id="addressWrap" style="display:inline-block">
-                        <input id="address" placeholder="Dirección de entrega" />
+    <main>
+        <div>
+            <!-- COMPLETOS -->
+            <div class="section" id="completos">
+                <h2>🌭 Completos </h2>
+                <div class="product-group">
+                    <h3>Selecciona ingredientes</h3>
+                    <div class="ingredients">
+                        <label class="ingredient-item"><input type="checkbox"> Tomate</label>
+                        <label class="ingredient-item"><input type="checkbox"> Chucrut</label>
+                        <label class="ingredient-item"><input type="checkbox"> Papitas</label>
+                        <label class="ingredient-item"><input type="checkbox"> Salsa americana</label>
+                        <label class="ingredient-item"><input type="checkbox"> Mayonesa</label>
+                        <label class="ingredient-item"><input type="checkbox"> Palta</label>
                     </div>
-
-                    <input id="promoCode" placeholder="Código promo (opcional)" style="margin-left:auto"/>
-                    <button id="applyPromo">Aplicar promo</button>
+                    <div class="quantity-group">
+                        <label>Cantidad:</label>
+                        <input type="number" value="1" min="1">
+                        <button onclick="addToCart('Completos')">Agregar</button>
+                    </div>
                 </div>
             </div>
 
-            <section id="productsSection" class="card" style="margin-top:1rem">
-                <h3 id="productsTitle">Productos</h3>
-                <div id="products" class="products" aria-live="polite"></div>
-            </section>
-        </section>
-
-        <aside class="card" aria-labelledby="cartTitle">
-            <h3 id="cartTitle">Carrito</h3>
-            <div class="cart-items" id="cartItems"></div>
-
-            <div style="margin-top:.75rem" class="muted">
-                <div>Tipo: <span id="modeLabel">Envío</span></div>
-                <div id="addressLabel">Dirección: <span id="addrText"></span></div>
-                <div>Descuento: <span id="promoLabel">0%</span></div>
-            </div>
-
-            <div style="margin-top:.75rem;display:flex;gap:.5rem;align-items:center">
-                <div style="flex:1">
-                    <div class="muted">Total:</div>
-                    <strong id="total">0</strong>
-                </div>
-                <div style="text-align:right">
-                    <button id="checkout">Pagar</button>
-                    <button id="continue" style="background:#666">Seguir comprando</button>
+            <!-- PIZZAS -->
+            <div class="section" id="pizzas">
+                <h2>🍕 Pizzas Napolitanas</h2>
+                <div class="product-group">
+                    <h3>Selecciona ingredientes</h3>
+                    <div class="ingredients">
+                        <label class="ingredient-item"><input type="checkbox"> Mozzarella</label>
+                        <label class="ingredient-item"><input type="checkbox"> Pepperoni</label>
+                        <label class="ingredient-item"><input type="checkbox"> Champiñones</label>
+                        <label class="ingredient-item"><input type="checkbox"> Aceitunas</label>
+                        <label class="ingredient-item"><input type="checkbox"> Cebolla</label>
+                        <label class="ingredient-item"><input type="checkbox"> Jamón</label>
+                        <label class="ingredient-item"><input type="checkbox"> Pollo</label>
+                    </div>
+                    <div class="quantity-group">
+                        <label>Cantidad:</label>
+                        <input type="number" value="1" min="1">
+                        <button onclick="addToCart('Pizzas')">Agregar</button>
+                    </div>
                 </div>
             </div>
+
+            <!-- SUSHI -->
+            <div class="section" id="sushi">
+                <h2>🍣 Sushi Fresco</h2>
+                <div class="product-group">
+                    <h3>Selecciona ingredientes</h3>
+                    <div class="ingredients">
+                        <label class="ingredient-item"><input type="checkbox"> Salmón</label>
+                        <label class="ingredient-item"><input type="checkbox"> Atún</label>
+                        <label class="ingredient-item"><input type="checkbox"> Camarones</label>
+                        <label class="ingredient-item"><input type="checkbox"> Aguacate</label>
+                        <label class="ingredient-item"><input type="checkbox"> Pepino</label>
+                        <label class="ingredient-item"><input type="checkbox"> Queso Philadelphia</label>
+                        <label class="ingredient-item"><input type="checkbox"> Pollo</label>
+                    </div>
+                    <div class="quantity-group">
+                        <label>Cantidad:</label>
+                        <input type="number" value="1" min="1">
+                        <button onclick="addToCart('Sushi')">Agregar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BEBIDAS -->
+            <div class="section" id="bebidas">
+                <h2>🥤 Bebidas</h2>
+                <select class="beverage-select" id="beverageSelect">
+                    <option value="">Selecciona una bebida</option>
+                    <option value="Coca Cola - $2.000">Coca Cola - $2.000</option>
+                    <option value="Sprite - $2.000">Sprite - $2.000</option>
+                    <option value="Fanta - $2.000">Fanta - $2.000</option>
+                    <option value="Jugo Natural - $3.000">Jugo Natural - $3.000</option>
+                    <option value="Agua - $1.000">Agua - $1.000</option>
+                </select>
+                <div class="quantity-group">
+                    <label>Cantidad:</label>
+                    <input type="number" id="beverageQty" value="1" min="1">
+                    <button onclick="addBeverage()">Agregar</button>
+                </div>
+            </div>
+
+            <!-- ADICIONES -->
+            <div class="section">
+                <h2>🍟 Adiciones Extras</h2>
+                <select class="addon-select" id="addonSelect">
+                    <option value="">Selecciona una adición</option>
+                    <option value="Papas Fritas - $3.000">Papas Fritas - $3.000</option>
+                    <option value="Empanadas de Coctel - $4.000">Empanadas de Coctel - $4.000</option>
+                    <option value="Palitos de Ajo - $2.500">Palitos de Ajo - $2.500</option>
+                </select>
+                <div class="quantity-group">
+                    <label>Cantidad:</label>
+                    <input type="number" id="addonQty" value="1" min="1">
+                    <button onclick="addAddon()">Agregar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARRITO -->
+        <aside class="cart">
+            <h2>🛒 Tu Carrito</h2>
+            <div id="cartItems"></div>
+            
+            <div class="discount-section">
+                <label><strong>Código de Descuento:</strong></label>
+                <input type="text" id="discountCode" placeholder="Ingresa tu código">
+                <button class="checkout-btn" onclick="applyDiscount()" style="margin-top: 10px;">Aplicar Descuento</button>
+            </div>
+
+            <div class="cart-total">
+                Subtotal: $<span id="subtotal">0</span>
+            </div>
+            <div class="cart-total">
+                Descuento: -$<span id="discount">0</span>
+            </div>
+            <div class="cart-total">
+                Total: $<span id="total">0</span>
+            </div>
+
+            <button class="checkout-btn" onclick="checkout()">Finalizar Compra</button>
+            <button class="checkout-btn" style="background: #999; margin-top: 10px;" onclick="clearCart()">Vaciar Carrito</button>
         </aside>
     </main>
 
-    <footer>
-        <small>Diseño semántico básico — Interfaz de pedido</small>
-    </footer>
-
     <script>
-        // Datos iniciales
-        const PRODUCTS = {
-            completos: [
-                {id:'c1',name:'Completo Clásico',price:3500,desc:'Tomate, palta, mayonesa'},
-                {id:'c2',name:'Completo Italiano',price:3800,desc:'Palta, tomate, mayonesa especial'}
-            ],
-            pizzas: [
-                {id:'p1',name:'Margarita',price:7000,desc:'Queso mozzarella, tomate'},
-                {id:'p2',name:'Pepperoni',price:8200,desc:'Salsa, queso, pepperoni'}
-            ],
-            sushi: [
-                {id:'s1',name:'California Roll',price:5600,desc:'Aguacate, kanikama'},
-                {id:'s2',name:'Sashimi Mix',price:9200,desc:'Pescado fresco variado'}
-            ]
-        };
+        let cart = [];
+        let discountAmount = 0;
 
-        // Estado
-        let state = {
-            category: 'completos',
-            mode: 'envio',
-            address: '',
-            promo: {code:'',percent:0},
-            cart: []
-        };
-
-        // Elementos
-        const categorySelect = document.getElementById('category');
-        const productsEl = document.getElementById('products');
-        const cartItemsEl = document.getElementById('cartItems');
-        const totalEl = document.getElementById('total');
-        const modeLabel = document.getElementById('modeLabel');
-        const addressInput = document.getElementById('address');
-        const addressWrap = document.getElementById('addressWrap');
-        const addrText = document.getElementById('addrText');
-        const promoInput = document.getElementById('promoCode');
-        const promoLabel = document.getElementById('promoLabel');
-
-        // Render products by category
-        function renderProducts() {
-            productsEl.innerHTML = '';
-            const list = PRODUCTS[state.category] || [];
-            list.forEach(p => {
-                const card = document.createElement('article');
-                card.className = 'product';
-                card.innerHTML = `<strong>${p.name}</strong>
-                                                    <div class="muted">${p.desc}</div>
-                                                    <div style="display:flex;justify-content:space-between;align-items:center">
-                                                        <div class="muted">${formatPrice(p.price)}</div>
-                                                        <div>
-                                                            <input type="number" min="1" value="1" id="qty_${p.id}" style="width:64px;margin-right:.4rem"/>
-                                                            <button data-id="${p.id}">Agregar</button>
-                                                        </div>
-                                                    </div>`;
-                productsEl.appendChild(card);
-                card.querySelector('button').addEventListener('click', () => {
-                    const qty = parseInt(document.getElementById('qty_'+p.id).value) || 1;
-                    addToCart({...p}, qty);
-                });
-            });
+        function addToCart(product) {
+            alert(product + ' agregado al carrito');
+            updateCart();
         }
 
-        function addToCart(product, qty=1){
-            const found = state.cart.find(i=>i.id===product.id);
-            if(found) found.qty += qty;
-            else state.cart.push({...product, qty});
-            renderCart();
+        function addBeverage() {
+            const beverage = document.getElementById('beverageSelect').value;
+            const qty = document.getElementById('beverageQty').value;
+            if (beverage) cart.push({ name: beverage, qty: qty });
+            updateCart();
         }
 
-        function updateQty(id, qty){
-            const item = state.cart.find(i=>i.id===id);
-            if(!item) return;
-            item.qty = qty;
-            if(item.qty<=0) state.cart = state.cart.filter(i=>i.id!==id);
-            renderCart();
+        function addAddon() {
+            const addon = document.getElementById('addonSelect').value;
+            const qty = document.getElementById('addonQty').value;
+            if (addon) cart.push({ name: addon, qty: qty });
+            updateCart();
         }
 
-        function removeItem(id){
-            state.cart = state.cart.filter(i=>i.id!==id);
-            renderCart();
+        function updateCart() {
+            const cartDiv = document.getElementById('cartItems');
+            cartDiv.innerHTML = cart.map((item, i) => 
+                `<div class="cart-item"><span>${item.name} x${item.qty}</span><button onclick="removeFromCart(${i})">✕</button></div>`
+            ).join('');
+            updateTotal();
         }
 
-        function renderCart(){
-            cartItemsEl.innerHTML = '';
-            state.cart.forEach(i=>{
-                const div = document.createElement('div');
-                div.className = 'cart-item';
-                div.innerHTML = `<div>
-                        <strong>${i.name}</strong>
-                        <div class="muted">${formatPrice(i.price)} c/u</div>
-                    </div>
-                    <div class="controls">
-                        <input type="number" min="1" value="${i.qty}" style="width:64px" />
-                        <div style="width:6px"></div>
-                        <button data-remove="${i.id}" style="background:#c62828">X</button>
-                    </div>`;
-                cartItemsEl.appendChild(div);
-                div.querySelector('input').addEventListener('change', (e)=> updateQty(i.id, parseInt(e.target.value)||1));
-                div.querySelector('button').addEventListener('click', ()=> removeItem(i.id));
-            });
-
-            // Totales
-            const subtotal = state.cart.reduce((s,i)=>s + i.price * i.qty, 0);
-            const discount = Math.round(subtotal * (state.promo.percent/100));
-            const total = subtotal - discount;
-            totalEl.textContent = formatPrice(total);
-            promoLabel.textContent = state.promo.percent + '%';
-            modeLabel.textContent = state.mode === 'envio' ? 'Envío' : 'Retiro';
-            addrText.textContent = state.address || '-';
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
         }
 
-        function formatPrice(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ' CLP'; }
+        function updateTotal() {
+            const subtotal = cart.length > 0 ? Math.random() * 50000 : 0;
+            document.getElementById('subtotal').textContent = Math.round(subtotal);
+            document.getElementById('total').textContent = Math.round(subtotal - discountAmount);
+        }
 
-        // Event bindings
-        categorySelect.addEventListener('change', (e)=> { state.category = e.target.value; renderProducts(); });
-        document.querySelectorAll('nav a').forEach(a=> a.addEventListener('click', (ev)=>{
-            ev.preventDefault();
-            const cat = a.dataset.cat;
-            state.category = cat;
-            categorySelect.value = cat;
-            renderProducts();
-            window.scrollTo({top:0,behavior:'smooth'});
-        }));
+        function applyDiscount() {
+            const code = document.getElementById('discountCode').value;
+            discountAmount = code === 'ITALIA10' ? 5000 : code === 'PIZZA20' ? 10000 : 0;
+            document.getElementById('discount').textContent = discountAmount;
+            updateTotal();
+        }
 
-        document.querySelectorAll('input[name="mode"]').forEach(r=>{
-            r.addEventListener('change', ()=> {
-                state.mode = document.querySelector('input[name="mode"]:checked').value;
-                addressWrap.style.display = state.mode === 'envio' ? 'inline-block' : 'none';
-                renderCart();
-            });
-        });
+        function checkout() {
+            alert('¡Gracias por tu compra! Tu pedido será entregado pronto. 🍽️');
+            clearCart();
+        }
 
-        addressInput.addEventListener('input', (e)=> { state.address = e.target.value; renderCart(); });
+        function clearCart() {
+            cart = [];
+            discountAmount = 0;
+            updateCart();
+            document.getElementById('discountCode').value = '';
+            document.getElementById('discount').textContent = '0';
+        }
 
-        document.getElementById('applyPromo').addEventListener('click', ()=>{
-            const code = promoInput.value.trim().toUpperCase();
-            // Reglas simples de ejemplo
-            if(code === 'DESC10'){ state.promo = {code, percent:10}; }
-            else if(code === 'DESC20'){ state.promo = {code, percent:20}; }
-            else if(code === ''){ state.promo = {code:'',percent:0}; }
-            else { alert('Código no válido'); return; }
-            renderCart();
-        });
-
-        document.getElementById('continue').addEventListener('click', ()=> {
-            // "Seguir comprando" simplemente cierra foco al carrito y vuelve a productos
-            window.scrollTo({top:0,behavior:'smooth'});
-            document.getElementById('productsSection').focus();
-        });
-
-        document.getElementById('checkout').addEventListener('click', ()=>{
-            if(state.cart.length === 0){ alert('Carrito vacío'); return; }
-            const summary = {
-                items: state.cart,
-                mode: state.mode,
-                address: state.mode === 'envio' ? state.address : null,
-                promo: state.promo
-            };
-            console.log('Pedido:', summary);
-            alert('Pedido preparado (simulado). Revisa la consola para detalles.');
-            // Limpiar
-            state.cart = [];
-            state.promo = {code:'',percent:0};
-            promoInput.value = '';
-            renderCart();
-        });
-
-        // Inicialización
-        renderProducts();
-        renderCart();
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
     </script>
 </body>
 </html>
