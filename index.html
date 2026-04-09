@@ -79,6 +79,40 @@
             color: #f4a460;
             margin-bottom: 10px;
         }
+        .product-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+        .product-photo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .product-photo input[type="file"] {
+            padding: 10px;
+            border: 2px dashed #f4a460;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .product-photo img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 2px solid #ffe4cc;
+            display: none;
+        }
+        .product-photo img.preview-active {
+            display: block;
+        }
+        .product-details {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
         .ingredients {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -222,13 +256,22 @@
                 <h2>🌭 Completos </h2>
                 <div class="product-group">
                     <h3>Selecciona ingredientes</h3>
-                    <div class="ingredients">
-                        <label class="ingredient-item"><input type="checkbox"> Tomate</label>
-                        <label class="ingredient-item"><input type="checkbox"> Chucrut</label>
-                        <label class="ingredient-item"><input type="checkbox"> Papitas</label>
-                        <label class="ingredient-item"><input type="checkbox"> Salsa americana</label>
-                        <label class="ingredient-item"><input type="checkbox"> Mayonesa</label>
-                        <label class="ingredient-item"><input type="checkbox"> Palta</label>
+                    <div class="product-content">
+                        <div class="product-photo">
+                            <label for="photoCompletos" style="font-weight: bold; color: #f4a460;">Foto de tu Completo:</label>
+                            <input type="file" id="photoCompletos" accept="image/*" onchange="previewImage(this, 'previewCompletos')">
+                            <img id="previewCompletos" alt="Foto del completo">
+                        </div>
+                        <div class="product-details">
+                            <div class="ingredients">
+                                <label class="ingredient-item"><input type="checkbox"> Tomate</label>
+                                <label class="ingredient-item"><input type="checkbox"> Chucrut</label>
+                                <label class="ingredient-item"><input type="checkbox"> Papitas</label>
+                                <label class="ingredient-item"><input type="checkbox"> Salsa americana</label>
+                                <label class="ingredient-item"><input type="checkbox"> Mayonesa</label>
+                                <label class="ingredient-item"><input type="checkbox"> Palta</label>
+                            </div>
+                        </div>
                     </div>
                     <div class="quantity-group">
                         <label>Cantidad:</label>
@@ -243,14 +286,23 @@
                 <h2>🍕 Pizzas Napolitanas</h2>
                 <div class="product-group">
                     <h3>Selecciona ingredientes</h3>
-                    <div class="ingredients">
-                        <label class="ingredient-item"><input type="checkbox"> Mozzarella</label>
-                        <label class="ingredient-item"><input type="checkbox"> Pepperoni</label>
-                        <label class="ingredient-item"><input type="checkbox"> Champiñones</label>
-                        <label class="ingredient-item"><input type="checkbox"> Aceitunas</label>
-                        <label class="ingredient-item"><input type="checkbox"> Cebolla</label>
-                        <label class="ingredient-item"><input type="checkbox"> Jamón</label>
-                        <label class="ingredient-item"><input type="checkbox"> Pollo</label>
+                    <div class="product-content">
+                        <div class="product-photo">
+                            <label for="photoPizzas" style="font-weight: bold; color: #f4a460;">Foto de tu Pizza:</label>
+                            <input type="file" id="photoPizzas" accept="image/*" onchange="previewImage(this, 'previewPizzas')">
+                            <img id="previewPizzas" alt="Foto de la pizza">
+                        </div>
+                        <div class="product-details">
+                            <div class="ingredients">
+                                <label class="ingredient-item"><input type="checkbox"> Mozzarella</label>
+                                <label class="ingredient-item"><input type="checkbox"> Pepperoni</label>
+                                <label class="ingredient-item"><input type="checkbox"> Champiñones</label>
+                                <label class="ingredient-item"><input type="checkbox"> Aceitunas</label>
+                                <label class="ingredient-item"><input type="checkbox"> Cebolla</label>
+                                <label class="ingredient-item"><input type="checkbox"> Jamón</label>
+                                <label class="ingredient-item"><input type="checkbox"> Pollo</label>
+                            </div>
+                        </div>
                     </div>
                     <div class="quantity-group">
                         <label>Cantidad:</label>
@@ -265,14 +317,23 @@
                 <h2>🍣 Sushi Fresco</h2>
                 <div class="product-group">
                     <h3>Selecciona ingredientes</h3>
-                    <div class="ingredients">
-                        <label class="ingredient-item"><input type="checkbox"> Salmón</label>
-                        <label class="ingredient-item"><input type="checkbox"> Atún</label>
-                        <label class="ingredient-item"><input type="checkbox"> Camarones</label>
-                        <label class="ingredient-item"><input type="checkbox"> Aguacate</label>
-                        <label class="ingredient-item"><input type="checkbox"> Pepino</label>
-                        <label class="ingredient-item"><input type="checkbox"> Queso Philadelphia</label>
-                        <label class="ingredient-item"><input type="checkbox"> Pollo</label>
+                    <div class="product-content">
+                        <div class="product-photo">
+                            <label for="photoSushi" style="font-weight: bold; color: #f4a460;">Foto de tu Sushi:</label>
+                            <input type="file" id="photoSushi" accept="image/*" onchange="previewImage(this, 'previewSushi')">
+                            <img id="previewSushi" alt="Foto del sushi">
+                        </div>
+                        <div class="product-details">
+                            <div class="ingredients">
+                                <label class="ingredient-item"><input type="checkbox"> Salmón</label>
+                                <label class="ingredient-item"><input type="checkbox"> Atún</label>
+                                <label class="ingredient-item"><input type="checkbox"> Camarones</label>
+                                <label class="ingredient-item"><input type="checkbox"> Aguacate</label>
+                                <label class="ingredient-item"><input type="checkbox"> Pepino</label>
+                                <label class="ingredient-item"><input type="checkbox"> Queso Philadelphia</label>
+                                <label class="ingredient-item"><input type="checkbox"> Pollo</label>
+                            </div>
+                        </div>
                     </div>
                     <div class="quantity-group">
                         <label>Cantidad:</label>
@@ -450,6 +511,18 @@
 
         function scrollToSection(id) {
             document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function previewImage(input, previewId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewImg = document.getElementById(previewId);
+                    previewImg.src = e.target.result;
+                    previewImg.classList.add('preview-active');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
         }
     </script>
 </body>
