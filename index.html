@@ -29,9 +29,7 @@
                     <h3>Selecciona ingredientes</h3>
                     <div class="product-content">
                         <div class="product-photo">
-                            <label for="photoCompletos" style="font-weight: bold; color: #f4a460;">Foto de tu Completo:</label>
-                            <input type="file" id="photoCompletos" accept="image/*" onchange="previewImage(this, 'previewCompletos')">
-                            <img id="previewCompletos" alt="Foto del completo">
+                            <img src="img/completos.jpg" alt="Foto del completo">
                         </div>
                         <div class="product-details">
                             <div class="ingredients">
@@ -59,9 +57,7 @@
                     <h3>Selecciona ingredientes</h3>
                     <div class="product-content">
                         <div class="product-photo">
-                            <label for="photoPizzas" style="font-weight: bold; color: #f4a460;">Foto de tu Pizza:</label>
-                            <input type="file" id="photoPizzas" accept="image/*" onchange="previewImage(this, 'previewPizzas')">
-                            <img id="previewPizzas" alt="Foto de la pizza">
+                            <img src="img/pizzas.jpg" alt="Foto de la pizza">
                         </div>
                         <div class="product-details">
                             <div class="ingredients">
@@ -90,9 +86,7 @@
                     <h3>Selecciona ingredientes</h3>
                     <div class="product-content">
                         <div class="product-photo">
-                            <label for="photoSushi" style="font-weight: bold; color: #f4a460;">Foto de tu Sushi:</label>
-                            <input type="file" id="photoSushi" accept="image/*" onchange="previewImage(this, 'previewSushi')">
-                            <img id="previewSushi" alt="Foto del sushi">
+                            <img src="img/sushis.jpg" alt="Foto del sushi">
                         </div>
                         <div class="product-details">
                             <div class="ingredients">
@@ -282,18 +276,6 @@
 
         function scrollToSection(id) {
             document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function previewImage(input, previewId) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const previewImg = document.getElementById(previewId);
-                    previewImg.src = e.target.result;
-                    previewImg.classList.add('preview-active');
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
         }
     </script>
 </body>
